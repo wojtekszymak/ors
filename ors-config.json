@@ -1,0 +1,286 @@
+{
+  "ors": {
+    "info": {
+      "base_url": "https://map-route.etoll.gov.pl/",
+      "support_mail": "serwis.spoe@il-pib.pl",
+      "author_tag": "openrouteservice",
+      "content_licence": "LGPL 3.0"
+    },
+    "services": {
+      "matrix": {
+        "enabled": true,
+        "maximum_routes": 256,
+        "maximum_routes_flexible": 25,
+        "maximum_search_radius": 5000,
+        "maximum_visited_nodes": 100000,
+        "allow_resolve_locations": true,
+        "attribution": "openrouteservice.org, OpenStreetMap contributors"
+      },
+      "isochrones": {
+        "enabled": true,
+        "maximum_range_distance": [
+          {
+            "profiles": "any",
+            "value": 50000
+          },
+          {
+            "profiles": "driving-car, driving-hgv",
+            "value": 100000
+          }
+        ],
+        "maximum_range_time": [
+          {
+            "profiles": "any",
+            "value": 18000
+          },
+          {
+            "profiles": "driving-car, driving-hgv",
+            "value": 3600
+          }
+        ],
+        "fastisochrones": {
+          "maximum_range_distance": [
+            {
+              "profiles": "any",
+              "value": 50000
+            },
+            {
+              "profiles": "driving-car, driving-hgv",
+              "value": 500000
+            }
+          ],
+          "maximum_range_time": [
+            {
+              "profiles": "any",
+              "value": 18000
+            },
+            {
+              "profiles": "driving-car, driving-hgv",
+              "value": 10800
+            }
+          ],
+          "profiles": {
+            "default_params": {
+              "enabled": true,
+              "threads": 12,
+              "weightings": "recommended",
+              "maxcellnodes": 5000
+            },
+            "profile-hgv": {
+              "enabled": true,
+              "threads": 12,
+              "weightings": "recommended, shortest",
+              "maxcellnodes": 5000
+            }
+          }
+        },
+        "maximum_intervals": 10,
+        "maximum_locations": 2,
+        "allow_compute_area": true
+      },
+      "routing": {
+        "enabled": true,
+        "mode": "normal",
+        "routing_description": "This is a routing file from openrouteservice",
+        "routing_name": "openrouteservice routing",
+        "sources": [
+          "/srv/ors/data/poland-latest.osm.pbf"
+        ],
+        "update" {
+          "enabled": true,
+          "time": "1, 00:00:01, 9000000",
+          "source": "http://127.0.0.1:8080/geofabrik/poland-latest.osm.pbf",
+          "working_directory": "/srv/ors/update"
+        },
+        "init_threads": 2,
+        "attribution": "openrouteservice.org, OpenStreetMap contributors",
+        "elevation_preprocessed": false,
+        "profiles": {
+          "active": [
+            "car",
+            "hgv"
+          ],
+          "default_params": {
+            "encoder_flags_size": 8,
+            "graphs_root_path": "/srv/ors/data/graphs",
+            "elevation_provider": "cgiar",
+            "elevation_cache_path": "/srv/ors/data/elevation_cache",
+            "elevation_cache_clear": false,
+            "elevation_smoothing": false,
+            "instructions": true,
+            "maximum_distance": 5000000,
+            "maximum_distance_dynamic_weights": 5000000,
+            "maximum_distance_avoid_areas": 5000000,
+            "maximum_segment_distance_with_dynamic_weights": 5000000,
+            "maximum_waypoints": 50,
+            "maximum_snapping_radius": 400,
+            "maximum_avoid_polygon_area": 200000000,
+            "maximum_avoid_polygon_extent": 20000,
+            "maximum_distance_alternative_routes": 5000000,
+            "maximum_alternative_routes": 3,
+            "maximum_distance_round_trip_routes": 5000000,
+            "maximum_speed_lower_bound": 80,
+            "location_index_resolution": 500,
+            "location_index_search_iterations": 4,
+            "interpolate_bridges_and_tunnels": true,
+            "preparation": {
+              "min_network_size": 200,
+              "min_one_way_network_size": 200,
+              "methods": {
+                "lm": {
+                  "enabled": true,
+                  "threads": 1,
+                  "weightings": "recommended,shortest",
+                  "landmarks": 16
+                }
+              }
+            },
+            "execution": {
+              "methods": {
+                "lm": {
+                  "disabling_allowed": true,
+                  "active_landmarks": 8
+                }
+              }
+            }
+          },
+          "profile-car": {
+            "profiles": "driving-car",
+            "parameters": {
+              "encoder_flags_size": 8,
+              "encoder_options": "turn_costs=true|block_fords=false|use_acceleration=true",
+              "elevation": true,
+              "maximum_snapping_radius": 350,
+              "preparation": {
+                "min_network_size": 200,
+                "min_one_way_network_size": 200,
+                "methods": {
+                  "ch": {
+                    "enabled": true,
+                    "threads": 1,
+                    "weightings": "fastest"
+                  },
+                  "lm": {
+                    "enabled": false,
+                    "threads": 1,
+                    "weightings": "fastest,shortest",
+                    "landmarks": 16
+                  },
+                  "core": {
+                    "enabled": true,
+                    "threads": 1,
+                    "weightings": "fastest,shortest",
+                    "landmarks": 64,
+                    "lmsets": "highways;allow_all"
+                  }
+                }
+              },
+              "execution": {
+                "methods": {
+                  "ch": {
+                    "disabling_allowed": true
+                  },
+                  "lm": {
+                    "disabling_allowed": true,
+                    "active_landmarks": 6
+                  },
+                  "core": {
+                    "disabling_allowed": true,
+                    "active_landmarks": 6
+                  }
+                }
+              },
+              "ext_storages": {
+                "WayCategory": {},
+                "HeavyVehicle": {},
+                "WaySurfaceType": {},
+                "RoadAccessRestrictions": {
+                  "use_for_warnings": true
+                },
+                "Tollways":{},
+                "OsmId":{},
+                "Borders":{
+                  "boundaries":"/srv/ors/conf/boundaries.geojson",
+                  "ids":"/srv/ors/conf/ids.csv",
+                  "openborders":"/srv/ors/conf/openborders.csv"
+                }
+              }
+            }
+          },
+          "profile-hgv": {
+            "profiles": "driving-hgv",
+            "parameters": {
+              "encoder_flags_size": 8,
+              "encoder_options": "turn_costs=true|block_fords=false|use_acceleration=true",
+              "elevation": true,
+              "preparation": {
+                "min_network_size": 200,
+                "min_one_way_network_size": 200,
+                "methods": {
+                  "ch": {
+                    "enabled": true,
+                    "threads": 1,
+                    "weightings": "recommended"
+                  },
+                  "lm":{
+                    "enabled":true,
+                    "threads":1,
+                    "weightings":"recommended,shortest",
+                    "landmarks":16
+                  },
+                  "core": {
+                    "enabled": true,
+                    "threads": 1,
+                    "weightings": "recommended,shortest",
+                    "landmarks": 64,
+                    "lmsets": "highways;allow_all"
+                  }
+                }
+              },
+              "execution": {
+                "methods": {
+                  "ch": {
+                    "disabling_allowed": true
+                  },
+                  "lm":{
+                    "disabling_allowed":true,
+                    "active_landmarks":6
+                  },
+                  "core": {
+                    "disabling_allowed": true,
+                    "active_landmarks": 6
+                  }
+                }
+              },
+              "ext_storages": {
+                "WayCategory": {},
+                "HeavyVehicle": {
+                  "restrictions": true
+                },
+                "WaySurfaceType": {},
+                "RoadAccessRestrictions": {
+                  "use_for_warnings":true
+                },
+                "Tollways": {},
+                "OsmId": {},
+                "Borders": {
+                  "boundaries":"/srv/ors/conf/boundaries.geojson",
+                  "ids":"/srv/ors/conf/ids.csv",
+                  "openborders":"/srv/ors/conf/openborders.csv"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "logging": {
+      "enabled": true,
+      "level_file": "DEBUG_LOGGING.json",
+      "location": "/srv/ors/logs",
+      "stdout": true
+    },
+    "system_message": [
+    ]
+  }
+}
