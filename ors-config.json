@@ -86,7 +86,7 @@
         "sources": [
           "/srv/ors/data/poland-latest.osm.pbf"
         ],
-        "update" {
+        "update": {
           "enabled": true,
           "time": "1, 00:00:01, 9000000",
           "source": "http://127.0.0.1:8080/geofabrik/poland-latest.osm.pbf",
